@@ -111,7 +111,7 @@ test('Install Kubewarden', async({ page, ui, nav, context }) => {
     await expect(page).toHaveURL(/.*\/apps\/charts\/install.*chart=kubewarden-defaults/)
 
     // Handle PolicyServer Installer Dialog
-    await psPage.installDefault({ version: MODE === 'upgrade' ? upMap[0].defaults : undefined, recommended: true, mode: 'monitor' })
+    await psPage.installDefault({ recommended: true, mode: 'monitor' })
   })
 })
 
