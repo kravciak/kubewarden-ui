@@ -17,3 +17,8 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 10
+    # Group dependency updates together in one PR
+    groups:
+      babel:
+        patterns:
+          - '@babel/*'
