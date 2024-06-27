@@ -52,9 +52,12 @@ test('Initial rancher setup', async({ page, ui, nav }) => {
 
 test('Install UI extension', async({ page, ui }) => {
   const extensions = new RancherExtensionsPage(page)
+  await extensions.goto()
 
   await test.step('Enable extension support', async() => {
-    await extensions.enable({ rancherRepo: ORIGIN === 'released' })
+    if (RancherUI.isVersion('<2.9')) {
+      await extensions.enable({ rancherRepo: ORIGIN === 'released' })
+    }
     // Wait for default list of extensions
     if (ORIGIN === 'released') {
       await ui.retry(async() => {
