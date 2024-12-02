@@ -25,6 +25,7 @@ const upMap: AppVersion[] = [
   { app: 'v1.16.0', controller: '2.4.0', crds: '1.8.0', defaults: '2.3.1' },
   { app: 'v1.17.0', controller: '3.0.1', crds: '1.9.0', defaults: '2.4.0' },
   { app: 'v1.18.0', controller: '3.1.0', crds: '1.10.0', defaults: '2.5.0' },
+  { app: 'v1.19.0', controller: '3.2.0', crds: '1.11.0', defaults: '2.6.0' },
 ].splice(-3) // Limit upgrade path to last 5 versions
 
 // Support for Rancher 2.9 was added in KW 1.13.0
