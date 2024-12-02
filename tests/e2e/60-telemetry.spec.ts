@@ -239,7 +239,9 @@ test.describe('Metrics', () => {
     await nav.pserver('default', 'Metrics')
     await telPage.toBeIncomplete('config')
     await telPage.toBeIncomplete('monitoring')
-    await telPage.toBeIncomplete('servicemonitor')
+    await ui.retry(async() => {
+      await telPage.toBeIncomplete('servicemonitor')
+    }, 'Service Monitor is not unchecked')
     await telPage.toBeIncomplete('configmap')
     await expect(telPage.configBtn).toBeDisabled()
   })
