@@ -100,8 +100,17 @@ export class Navigation {
     async mainNav(to: 'Home' | 'Continuous Delivery' | 'Cluster Management' | 'Virtualization Management' | 'Users & Authentication' | 'Extensions' | 'Global Settings' | 'About') {
       if (this.isblank()) await this.page.goto('/')
 
-      await this.page.getByTestId('top-level-menu').click()
-      await this.page.getByTestId('side-menu').getByRole('link', { name: to }).click()
+      const toLink = this.page.getByTestId('side-menu').getByRole('link', { name: to })
+      const active = await toLink.getAttribute('class').then(c => c?.includes('active-menu-link') ?? false)
+
+      if (!active) {
+        // await this.page.getByTestId('top-level-menu').click()
+        await toLink.click()
+        // Page switches to available tab after loading
+        if (to == 'Extensions') await expect(this.page.getByTestId('available')).toHaveClass(/active/)
+      }
+      // await this.page.getByTestId('top-level-menu').click()
+      // await this.page.getByTestId('side-menu').getByRole('link', { name: to }).click()
     }
 
     // Cluster by name
