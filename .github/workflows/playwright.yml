@@ -1,5 +1,8 @@
 name: Playwright Tests
 
+# Use release name as run name (kubewarden-2.1.4)
+run-name: ${{ github.event_name == 'workflow_run' && format('Release {0}', github.event.workflow_run.head_commit.message ) || '' }}
+
 on:
   workflow_dispatch:
     inputs:
@@ -78,8 +81,8 @@ on:
     - cron: "0 21 * * *"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_run' }}
 
 env:
   # Github -> Secrets and variables -> Actions -> New repository variable
