@@ -1,5 +1,5 @@
 kubewarden:
-  title: Kubewarden
+  title: KubewardenE
   unavailability:
     banner: 'You do not have access to the {type}. Please contact your administrator.'
     type:
