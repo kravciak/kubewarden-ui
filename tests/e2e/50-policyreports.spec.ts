@@ -83,7 +83,7 @@ test('Check reports on resources details page', async({ ui, nav }) => {
 test('Cleanup & check results are gone', async({ page, ui, nav, shell }) => {
   const reporter = new PolicyReporterPage(page)
 
-  await nav.explorer('Kubewarden', 'ClusterAdmissionPolicies')
+  await nav.capolicies()
   await ui.tableRow(policyLabels).delete()
   await shell.runBatch(
     `kubectl delete ns ${testNs}`,
