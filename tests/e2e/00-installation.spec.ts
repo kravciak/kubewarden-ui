@@ -15,15 +15,16 @@ const inst = {
   // How to install Kubewarden: manual (from UI extension), fleet, upgrade (previously version)
   kw_mode: process.env.MODE || 'manual',
   // Fetch Kubewarden versions from github for upgrade test
-  upMap  : [] as AppVersion[]
+  upMap  : process.env.MODE === 'upgrade' ? (await Common.fetchVersionMap()).splice(-3) : [] as AppVersion[],
+  // upMap  : [] as AppVersion[]
 }
 
 expect(inst.ui_from).toMatch(/^(source|github|prime)$/)
 expect(inst.kw_mode).toMatch(/^(manual|fleet|upgrade)$/)
 
-test.beforeAll(async() => {
-  if (inst.kw_mode === 'upgrade') inst.upMap = (await Common.fetchVersionMap()).splice(-3)
-})
+// test.beforeAll(async() => {
+// if (inst.kw_mode === 'upgrade') inst.upMap = (await Common.fetchVersionMap()).splice(-3)
+// })
 
 test('Initial rancher setup', async({ page, ui, nav }) => {
   const rancher = new RancherCommonPage(page)
