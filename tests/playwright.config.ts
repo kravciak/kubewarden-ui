@@ -22,7 +22,6 @@ export default defineConfig({
     [process.env.CI ? 'html' : 'list'],
     process.env.QASE_MODE === 'testops'
       ? ['playwright-qase-reporter', {
-          debug  : true,
           testops: {
             api              : { token: process.env.QASE_APITOKEN },
             project          : 'KUBEWARDEN',
