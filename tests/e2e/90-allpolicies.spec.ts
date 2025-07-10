@@ -69,6 +69,7 @@ const policySettingsMap: Partial<Record<policyTitle, PolicySettings>> = {
   'Helm Release Remediation Retries'                                     : { skip: 'https://github.com/rancher/kubewarden-ui/pull/1250' },
   'Resource Reconcile Interval Must Be Set Between Lower and Upper Bound': { skip: 'https://github.com/rancher/kubewarden-ui/pull/1250' },
   'Namespace Pod Quota'                                                  : { skip: 'https://github.com/rancher/kubewarden-ui/pull/1250' },
+  'High Risk Service Account Policy'                                     : { skip: 'Not released: https://github.com/kubewarden/high-risk-service-account-policy/pull/1' }
 }
 
 async function generalArray(ui: RancherUI) {
