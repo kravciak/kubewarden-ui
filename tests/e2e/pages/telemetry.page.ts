@@ -1,6 +1,8 @@
 import type { Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 import { BasePage } from '../rancher/basepage'
+import { Chart, Repo, RancherAppsPage } from '../rancher/rancher-apps.page'
+import { YAMLPatch } from '../components/rancher-ui'
 
 type ChecklistLine = 'otel' | 'jaeger' | 'monitoring' | 'servicemonitor' | 'configmap' | 'config'
 
@@ -8,10 +10,12 @@ function getLine(tab: Page|Locator, text: string|RegExp) {
   return tab.locator('div.checklist__step:visible', { hasText: text })
 }
 
-type AppChart = Chart & {
+type ManagedApp = Chart & {
   repo : Repo
   yaml?: YAMLPatch
 }
+
+type ManagedAppList = keyof typeof apps
 
 export const apps = {
   certManager: {
@@ -29,7 +33,7 @@ export const apps = {
     repo     : { name: 'jaegertracing', url: 'https://jaegertracing.github.io/helm-charts' },
     yaml     : { 'jaeger.create': true, 'rbac.clusterRole': true }
   },
-} satisfies Record<string, AppChart>
+} satisfies Record<string, ManagedApp>
 
 export class TelemetryPage extends BasePage {
   readonly tracingTab: Locator
@@ -68,5 +72,19 @@ export class TelemetryPage extends BasePage {
 
   async toBeIncomplete(line: ChecklistLine) {
     await expect(this.lines[line].locator('i.icon-dot-open')).toBeVisible()
+  }
+
+  async addManaged(name: ManagedAppList) {
+    const app = apps[name]
+    const appsPage = new RancherAppsPage(this.page)
+    await appsPage.addRepository(app.repo)
+    await appsPage.installChart(app, { yamlPatch: app.yaml })
+  }
+
+  async removeManaged(name: ManagedAppList) {
+    const app = apps[name]
+    const appsPage = new RancherAppsPage(this.page)
+    await appsPage.deleteApp(app.name!)
+    await appsPage.deleteRepository(app.repo)
   }
 }

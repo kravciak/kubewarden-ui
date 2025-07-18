@@ -23,11 +23,11 @@ test.describe('Setup', () => {
 
     // Install Cert-Manager on imported clusters
     if (nav.testCluster.name !== 'local') {
-      await telPage.install(apps.certManager)
+      await telPage.addManaged('certManager')
     }
 
     // Install OpenTelemetry & Check
-    await telPage.install(apps.openTelemetry)
+    await telPage.addManaged('openTelemetry')
     for (const tab of ['Tracing', 'Metrics'] as const) {
       await nav.pservers('default', tab)
       await telPage.toBeComplete('otel')
@@ -61,7 +61,7 @@ test.describe('Tracing', () => {
     if (RancherUI.hasAppCollection) {
       await appsPage.installFromAppCollection(apps.jaeger)
     } else {
-      await telPage.install(apps.jaeger)
+      await telPage.addManaged('jaeger')
     }
 
     // Jaeger is installed
@@ -129,7 +129,7 @@ test.describe('Tracing', () => {
     if (RancherUI.hasAppCollection) {
       await appsPage.deleteApp('jaeger-operator')
     } else {
-      await telPage.remove(apps.jaeger)
+      await telPage.removeManaged('jaeger')
     }
     await shell.run('kubectl delete ns jaeger')
 
@@ -271,9 +271,9 @@ test.describe('Teardown', () => {
     test.skip(process.env.MODE === 'fleet')
 
     const telPage = new TelemetryPage(page)
-    await telPage.remove(apps.openTelemetry)
+    await telPage.removeManaged('openTelemetry')
     if (nav.testCluster.name !== 'local') {
-      await telPage.remove(apps.certManager)
+      await telPage.removeManaged('certManager')
     }
   })
 })
