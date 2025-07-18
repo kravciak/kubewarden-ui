@@ -46,9 +46,9 @@ dependsOn:
   - selector:
       matchLabels:
         app: rancher-kubewarden-crds
-  - selector:
-      matchLabels:
-        app.kubernetes.io/name: opentelemetry-operator
+  # - selector:
+  #     matchLabels:
+  #       app.kubernetes.io/name: opentelemetry-operator
   - selector:
       matchLabels:
         name: jaeger-operator
