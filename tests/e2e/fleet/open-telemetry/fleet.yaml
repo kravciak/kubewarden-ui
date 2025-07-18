@@ -12,4 +12,5 @@ labels:
   name: opentelemetry
 
 targetCustomizations:
-- doNotDeploy: true
+- clusterName: local
+  doNotDeploy: true
