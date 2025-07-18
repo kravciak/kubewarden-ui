@@ -2,7 +2,7 @@ defaultNamespace: opentelemetry
 helm:
   releaseName: opentelemetry
   chart: opentelemetry-operator
-  version: "0.86.4" # *
+  version: "*"
   repo: https://open-telemetry.github.io/opentelemetry-helm-charts
   values:
     manager:
@@ -10,3 +10,6 @@ helm:
         repository: "otel/opentelemetry-collector-contrib"
 labels:
   name: opentelemetry
+
+targetCustomizations:
+- doNotDeploy: true
