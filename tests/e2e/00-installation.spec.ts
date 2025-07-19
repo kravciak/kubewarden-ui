@@ -130,20 +130,36 @@ test('Install Kubewarden by Fleet', async({ page, ui }) => {
   test.skip(conf.kw_mode !== 'fleet')
   test.slow()
 
+  // Install OpenTelemetry with specific version from env
+  // const appsPage = new RancherAppsPage(page)
+  // await appsPage.addRepository(apps.openTelemetry.repo)
+  // await appsPage.installChart(apps.openTelemetry, {
+  //   yamlPatch: (y) => { y.manager.collectorImage.repository = 'otel/opentelemetry-collector-contrib' }
+  // })
+
   const fleetPage = new RancherFleetPage(page)
-  const repoRow = await fleetPage.addRepository({
+
+  // Add OTEL separatelly to set version from env
+  await fleetPage.addHelmOp({
+    name   : 'opentelemetry',
+    release: 'opentelemetry-operator',
+    repo     : {
+      url    : 'https://open-telemetry.github.io/opentelemetry-helm-charts',
+      chart  : 'opentelemetry-operator',
+      version: process.env.OTEL_OPERATOR || '0.91.0'
+    },
+    values   : { 'manager.collectorImage.repository': 'otel/opentelemetry-collector-contrib' },
+    yamlPatch: (y) => { y.spec.defaultNamespace = 'open-telemetry' },
+  }, { timeout: 20_000 })
+
+  await fleetPage.addGitRepo({
     name       : 'therepo',
     url        : 'https://github.com/rancher/kubewarden-ui.git',
     branch     : 'main',
     selfHealing: true,
     paths      : ['tests/e2e/fleet/'],
     workspace  : 'fleet-local'
-  })
-
-  await ui.retry(async() => {
-    await fleetPage.selectWorkspace('fleet-local')
-    await expect(repoRow.column('Clusters Ready')).toHaveText('1/1', { timeout: 7 * 60_000 })
-  }, 'Installed but not refreshed?')
+  }, { timeout: 2 * 60_000 })
 })
 
 test('Add Policy Catalog Repository', async({ page, ui, nav }) => {
