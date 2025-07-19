@@ -18,4 +18,4 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        app: rancher-kubewarden-crds
+        app: rancher-kubewarden-controller
