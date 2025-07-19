@@ -15,7 +15,7 @@ helm:
     #   image:
     #     tag: latest
 
-# dependsOn:
-#   - selector:
-#       matchLabels:
-#         app: rancher-kubewarden-controller
+dependsOn:
+  - selector:
+      matchLabels:
+        app: rancher-kubewarden-crds
