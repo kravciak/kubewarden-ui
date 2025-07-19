@@ -8,9 +8,10 @@ helm:
     manager:
       collectorImage:
         repository: "otel/opentelemetry-collector-contrib"
-# labels:
-#   name: opentelemetry
+
+labels:
+  name: opentelemetry
 
 targetCustomizations:
-- clusterName: local
+- clusterSelector: {} # match everything
   doNotDeploy: true

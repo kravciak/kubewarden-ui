@@ -30,14 +30,14 @@ helm:
     auditScanner:
       policyReporter: true
 
-diff:
-  comparePatches:
-  - apiVersion: opentelemetry.io/v1alpha1
-    kind: OpenTelemetryCollector
-    name: kubewarden
-    namespace: cattle-kubewarden-system
-    operations:
-    - {"op": "remove", "path": "/spec"}
+# diff:
+#   comparePatches:
+#   - apiVersion: opentelemetry.io/v1alpha1
+#     kind: OpenTelemetryCollector
+#     name: kubewarden
+#     namespace: cattle-kubewarden-system
+#     operations:
+#     - {"op": "remove", "path": "/spec"}
 
 labels:
   app: rancher-kubewarden-controller
@@ -46,9 +46,9 @@ dependsOn:
   - selector:
       matchLabels:
         app: rancher-kubewarden-crds
-  # - selector:
-  #     matchLabels:
-  #       app.kubernetes.io/name: opentelemetry-operator
+  - selector:
+      matchLabels:
+        name: opentelemetry
   - selector:
       matchLabels:
         name: jaeger-operator
