@@ -102,7 +102,21 @@ export class RancherFleetPage extends BasePage {
     })
   }
 
-  // Feature added in Rancher v2.12
+  /**
+   * Feature added in Rancher v2.12
+   * Example usage: Add OTEL with version from env
+   * await fleetPage.addHelmOp({
+   *   name   : 'opentelemetry',
+   *   release: 'opentelemetry-operator',
+   *   repo     : {
+   *     url    : 'https://open-telemetry.github.io/opentelemetry-helm-charts',
+   *     chart  : 'opentelemetry-operator',
+   *     version: process.env.OTEL_OPERATOR
+   *   },
+   *   values   : { 'manager.collectorImage.repository': 'otel/opentelemetry-collector-contrib' },
+   *   yamlPatch: (y) => { y.spec.defaultNamespace = 'open-telemetry' },
+   * }, { timeout: 20_000 })
+   */
   async addHelmOp(helmop: HelmOp, options?: { timeout?: number }) {
     await this.nav.fleet('Resources', 'Helm Ops')
     await this.ui.button('Create Helm Op').first().click()
