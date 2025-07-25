@@ -158,6 +158,9 @@ export class KubewardenPage extends BasePage {
     if (!to?.controller?.startsWith('4.1') && !to?.controller?.startsWith('5.0')) {
       await shell.waitPods()
     }
+    // Fix issue with defaults upgrade not showing on 2.12
+    await this.nav.explorer('Apps', 'Installed Apps')
+    await this.ui.tableRow('rancher-kubewarden-controller').toHaveState('Deployed')
 
     // Defaults upgrade
     await this.nav.kubewarden()
