@@ -38,6 +38,9 @@ async function globalSetup(config: FullConfig) {
   process.env.RANCHER_PRIME = data.RancherPrime
 
   await requestContext.dispose()
+
+  // Github vars are not passed to workflows that are triggered by a pull request from a fork
+  process.env.OTEL_OPERATOR ||= '0.92.0'
 }
 
 export default globalSetup
