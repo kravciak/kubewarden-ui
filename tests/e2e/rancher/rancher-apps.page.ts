@@ -26,7 +26,7 @@ export interface Chart {
   project?  : string
 }
 
-export const appCoRepo: Repo = {
+const appCoRepo: Repo = {
   name    : 'application-collection',
   url     : 'oci://dp.apps.rancher.io/charts',
   httpAuth: (() => {
