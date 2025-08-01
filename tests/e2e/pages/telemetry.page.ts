@@ -15,9 +15,9 @@ type ManagedApp = Chart & {
   yaml?: YAMLPatch
 }
 
-type ManagedAppList = keyof typeof apps
+type ManagedAppList = keyof typeof managedApps
 
-export const apps = {
+export const managedApps = {
   certManager: {
     title    : 'cert-manager', name     : 'cert-manager', namespace: 'cert-manager', check    : 'cert-manager',
     repo     : { name: 'jetstack', url: 'https://charts.jetstack.io' },
@@ -75,14 +75,14 @@ export class TelemetryPage extends BasePage {
   }
 
   async addManaged(name: ManagedAppList) {
-    const app = apps[name]
+    const app = managedApps[name]
     const appsPage = new RancherAppsPage(this.page)
     await appsPage.addRepository(app.repo)
     await appsPage.installChart(app, { yamlPatch: app.yaml })
   }
 
   async removeManaged(name: ManagedAppList) {
-    const app = apps[name]
+    const app = managedApps[name]
     const appsPage = new RancherAppsPage(this.page)
     await appsPage.deleteApp(app.name!)
     await appsPage.deleteRepository(app.repo)

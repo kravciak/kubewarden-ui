@@ -1,7 +1,7 @@
 import { test, expect } from './rancher/rancher-test'
 import { RancherAppsPage } from './rancher/rancher-apps.page'
 import { PolicyServersPage } from './pages/policyservers.page'
-import { apps, TelemetryPage } from './pages/telemetry.page'
+import { managedApps, TelemetryPage } from './pages/telemetry.page'
 import { RancherUI } from './components/rancher-ui'
 import { AdmissionPoliciesPage, Policy } from './pages/policies.page'
 
@@ -59,7 +59,7 @@ test.describe('Tracing', () => {
     await expect(telPage.configBtn).toBeDisabled()
     // Install Jaeger
     if (RancherUI.hasAppCollection) {
-      await appsPage.installFromAppCollection(apps.jaeger)
+      await appsPage.installFromAppCollection(managedApps.jaeger)
     } else {
       await telPage.addManaged('jaeger')
     }
