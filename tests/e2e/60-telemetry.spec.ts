@@ -246,8 +246,6 @@ test.describe('Metrics', () => {
         await ui.checkbox('Enable Metrics').uncheck()
       }
     })
-    // Table row might freeze on "Uninstalling"
-    await ui.page.reload()
     // Uninstall monitoring
     await appsPage.deleteApp('rancher-monitoring')
     await appsPage.deleteApp('rancher-monitoring-crd')
