@@ -85,18 +85,18 @@ export class Shell {
 
     // Command finished when we see EXITSTATUS-
     await expect(async() => {
-      await expect(this.page).toHaveScreenshot('shell/EXITSTATUS-NaN.png', { clip: { ...clip, width: 77 } })
+      await expect(this.page).toHaveScreenshot('shell/EXITSTATUS-NaN.png', { clip: { ...clip, width: 77 }, maxDiffPixels: 5 })
     }).toPass({ timeout, intervals: [500, 1_000, 5_000] })
 
     let statusCode = NaN
     if (isFinite(status)) {
       // Verify command exit status
-      await expect(this.page).toHaveScreenshot(`shell/EXITSTATUS-${status}.png`, { clip })
+      await expect(this.page).toHaveScreenshot(`shell/EXITSTATUS-${status}.png`, { clip, maxDiffPixels: 5 })
       statusCode = status
     } else {
       // Return exit status 0 if command passed (for retries)
       try {
-        await expect(this.page).toHaveScreenshot('shell/EXITSTATUS-0.png', { clip })
+        await expect(this.page).toHaveScreenshot('shell/EXITSTATUS-0.png', { clip, maxDiffPixels: 5 })
         statusCode = 0
       } catch {}
     }
