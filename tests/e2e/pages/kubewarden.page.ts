@@ -127,6 +127,10 @@ export class KubewardenPage extends BasePage {
     await expect(schedule).toHaveValue('*/60 * * * *')
     await schedule.fill('*/1 * * * *')
     await this.ui.checkbox('Enable Policy Reporter').check()
+    await this.ui.openView('Edit YAML')
+    await this.ui.editYaml((y) => {
+      y.auditScanner.reportCRDsKind = 'openreports'
+    })
 
     // Start installation
     await apps.installBtn.click()

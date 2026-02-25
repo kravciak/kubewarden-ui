@@ -29,6 +29,7 @@ helm:
               insecure: true
     auditScanner:
       policyReporter: true
+      reportCRDsKind: openreports
 
 diff:
   comparePatches:
