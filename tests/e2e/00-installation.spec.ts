@@ -45,7 +45,15 @@ test.beforeAll(async({ request }) => {
   }
 })
 
-test('Initial rancher setup', async({ page, ui, nav }) => {
+// tags:
+//  - @suite
+//  - @install / @integration
+//  - @kubewarden / admission
+//  - @sbomscanner
+//  - @runtime-enforcer
+//  - @process-enforcer
+
+test('Initial rancher setup', { tag: '@suite' }, async({ page, ui, nav }) => {
   const rancher = new RancherCommonPage(page)
 
   await test.step('Global setup', async() => {
@@ -70,7 +78,7 @@ test('Initial rancher setup', async({ page, ui, nav }) => {
   })
 })
 
-test('Install UI extension', async({ page, ui }) => {
+test('Install UI extension', { tag: '@suite' }, async({ page, ui }) => {
   const extensions = new RancherExtensionsPage(page)
   await extensions.goto()
 
@@ -103,7 +111,7 @@ test('Install UI extension', async({ page, ui }) => {
   })
 })
 
-test('Install Kubewarden', async({ page, ui, nav }) => {
+test('Install Kubewarden', { tag: '@suite' }, async({ page, ui, nav }) => {
   test.skip(conf.kw_mode === 'fleet')
 
   const kwPage = new KubewardenPage(page)
@@ -147,7 +155,7 @@ test('Install Kubewarden by Fleet', async({ page }) => {
   }, { timeout: 2 * 60_000 })
 })
 
-test('Add Policy Catalog Repository', async({ page, ui, nav }) => {
+test('Add Policy Catalog Repository', { tag: '@suite' }, async({ page, ui, nav }) => {
   const cap = new ClusterAdmissionPoliciesPage(page)
   await nav.capolicies()
 
