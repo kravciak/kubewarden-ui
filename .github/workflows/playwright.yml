@@ -137,7 +137,6 @@ jobs:
           - rancher: ${{ startsWith(github.event.workflow_run.head_branch, 'kubewarden-4.') && 'p2.10' }}
           - rancher: ${{ startsWith(github.event.workflow_run.head_branch, 'kubewarden-4.') && 'p2.11' }}
           - rancher: ${{ startsWith(github.event.workflow_run.head_branch, 'kubewarden-4.') && 'p2.12' }}
-          - rancher: ${{ startsWith(github.event.workflow_run.head_branch, 'kubewarden-4.') && 'c2.14' }}
 
 
     # Run schedule workflows only on original repo, not forks
