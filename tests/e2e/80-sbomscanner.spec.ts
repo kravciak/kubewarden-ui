@@ -45,7 +45,7 @@ test.beforeAll(async({ request }) => {
   }
 })
 
-test('Install UI extension', { tag: '@suite' }, async({ page, ui }) => {
+test('Install UI extension', { tag: '@in' }, async({ page, ui }) => {
   const extensions = new RancherExtensionsPage(page)
   await extensions.goto()
 
@@ -78,7 +78,7 @@ test('Install UI extension', { tag: '@suite' }, async({ page, ui }) => {
   })
 })
 
-test('Install SBOMScanner', { tag: '@suite' }, async({ page }) => {
+test('Install SBOMScanner', { tag: '@in' }, async({ page }) => {
   const sbomPage = new SbomScannerPage(page)
   await sbomPage.install()
   await sbomPage.goto()
@@ -134,58 +134,72 @@ spec:
     - arch: amd64
       os: linux
 `)
-
-    test('Create policy', async({ page }) => {
-      const cvePolicy : Policy = {
-        title    : 'image-cve',
-        name     : 'test-image-cve',
-        mode     : 'Monitor',
-        yamlPatch: {
-          'spec.settings.vulnerabilityReportNamespace'    : 'cattle-sbomscanner-system',
-          'spec.settings.maxSeverity.critical.total'      : 0,
-          'spec.settings.maxSeverity.high.total'          : 5,
-          'spec.settings.maxSeverity.medium.total'        : 10,
-          'spec.settings.maxSeverity.low.total'           : 20,
-          'spec.settings.ignoreMissingVulnerabilityReport': true,
-          'spec.failurePolicy'                            : 'Ignore',
-          'spec.timeoutEvalSeconds'                       : 10,
-        }
-      }
-      const polPage = new ClusterAdmissionPoliciesPage(page)
-      await polPage.create(cvePolicy, { wait: true })
-    })
   })
-})
 
-test('Sample deployment', async({ page, shell }) => {
-  // ghcr.io/nginx/nginx-unprivileged:1.26.3-alpine-perl
-  // ghcr.io/nginx/nginx-unprivileged:1.29.0-alpine-perl
-  const dep: Deployment = {
-    name     : 'test-workloadscan',
-    namespace: 'workloadscan-ns',
-    image    : 'ghcr.io/nginx/nginx-unprivileged:1.29.0-alpine-perl',
-  }
-  const wlPage = new RancherWorkloadsPage(page)
-  await wlPage.addDeployment(dep)
-  await shell.run(`k label namespace ${dep.namespace} sbomscanner.kubewarden.io/workloadscan=true`)
-})
+  test('Create test policy', async({ page }) => {
+    const cvePolicy : Policy = {
+      title    : 'image-cve',
+      name     : 'test-image-cve',
+      mode     : 'Monitor',
+      yamlPatch: {
+        'spec.settings.vulnerabilityReportNamespace'    : 'cattle-sbomscanner-system',
+        'spec.settings.maxSeverity.critical.total'      : 0,
+        'spec.settings.maxSeverity.high.total'          : 5,
+        'spec.settings.maxSeverity.medium.total'        : 10,
+        'spec.settings.maxSeverity.low.total'           : 20,
+        'spec.settings.ignoreMissingVulnerabilityReport': true,
+        'spec.failurePolicy'                            : 'Ignore',
+        'spec.timeoutEvalSeconds'                       : 10,
+      }
+    }
+    const polPage = new ClusterAdmissionPoliciesPage(page)
+    await polPage.create(cvePolicy, { wait: true })
+  })
 
-test('Check deployment compliance', async({ page, ui, nav }) => {
-  await nav.sbomScanner('Registries configuration')
-  await ui.tableRow({ Repositories: 'nginx/nginx-unprivileged' }).toHaveState('Finished')
+  test('Create test deployment', async({ page, shell }) => {
+    // ghcr.io/nginx/nginx-unprivileged:1.26.3-alpine-perl
+    // ghcr.io/nginx/nginx-unprivileged:1.29.0-alpine-perl
+    const dep: Deployment = {
+      name     : 'test-workloadscan',
+      namespace: 'workloadscan-ns',
+      image    : 'ghcr.io/nginx/nginx-unprivileged:1.29.0-alpine-perl',
+    }
+    const wlPage = new RancherWorkloadsPage(page)
+    await wlPage.addDeployment(dep)
+    await shell.run(`k label namespace ${dep.namespace} sbomscanner.kubewarden.io/workloadscan=true`)
+  })
 
-  const reporter = new PolicyReporterPage(page)
-  await reporter.runJob()
+  test('Check compliance report', async({ page, ui, nav }) => {
+    await nav.sbomScanner('Registries configuration')
+    await ui.tableRow({ Repositories: 'nginx/nginx-unprivileged' }).toHaveState('Finished')
 
-  await nav.explorer('Workloads', 'Deployments')
-  await ui.tableRow('test-workloadscan').open()
-  await ui.tab('Compliance').click()
-  const row = ui.tableRow({ Policy: 'test-image-cve' })
-  await ui.retry(async() => {
-    await row.toHaveState('fail', 5_000)
-  }, 'Load new reports')
-  await row.row.locator('td.row-expand').click()
-  await expect(row.row.locator('..')).toContainText('Exceeded the number of allowed CVEs')
+    const reporter = new PolicyReporterPage(page)
+    await reporter.runJob()
+
+    await nav.explorer('Workloads', 'Deployments')
+    await ui.tableRow('test-workloadscan').open()
+    await ui.tab('Compliance').click()
+    const row = ui.tableRow({ Policy: 'test-image-cve' })
+    await ui.retry(async() => {
+      await row.toHaveState('fail', 5_000)
+    }, 'Load new reports')
+    await row.row.locator('td.row-expand').click()
+    await expect(row.row.locator('..')).toContainText('Exceeded the number of allowed CVEs')
+  })
+
+  test('Teardown', async({ ui, shell }) => {
+  // test.skip()
+    const sbomPage = new SbomScannerPage(ui.page)
+    await sbomPage.deleteVexHub('rancher-vexhub')
+    await shell.runBatch(
+      'k delete ns workloadscan-ns --ignore-not-found',
+      'k delete ClusterRole sbomscanner-vulnerability-reports-viewer --ignore-not-found',
+      'k delete ClusterRoleBinding sbomscanner-vulnerabilility-reports-viewer-policy-server --ignore-not-found',
+      // 'k delete WorkloadScanConfiguration default --ignore-not-found',
+      'k delete ClusterAdmissionPolicy test-image-cve --ignore-not-found',
+      'k delete polr,cpolr,reps,creps -A --all'
+    )
+  })
 })
 
 test('Add Rancher VEX hub', async({ page }) => {
@@ -207,18 +221,4 @@ test('Trigger registry scan', async({ page }) => {
   await sbomPage.addRegistry(registry)
   await sbomPage.triggerScan(registry.name)
   await sbomPage.deleteRegistry(registry.name)
-})
-
-test('Teardown', async({ ui, shell }) => {
-  // test.skip()
-  const sbomPage = new SbomScannerPage(ui.page)
-  await sbomPage.deleteVexHub('rancher-vexhub')
-  await shell.runBatch(
-    'k delete ns workloadscan-ns --ignore-not-found',
-    'k delete ClusterRole sbomscanner-vulnerability-reports-viewer --ignore-not-found',
-    'k delete ClusterRoleBinding sbomscanner-vulnerabilility-reports-viewer-policy-server --ignore-not-found',
-    // 'k delete WorkloadScanConfiguration default --ignore-not-found',
-    'k delete ClusterAdmissionPolicy test-image-cve --ignore-not-found',
-    'k delete polr,cpolr,reps,creps -A --all'
-  )
 })
