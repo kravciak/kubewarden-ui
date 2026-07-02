@@ -48,8 +48,8 @@ export class RancherAppsPage extends BasePage {
 
   constructor(page: Page) {
     super(page)
-    this.step1 = page.getByRole('heading', { name: 'Install: Step 1' })
-    this.step2 = page.getByRole('heading', { name: 'Install: Step 2' })
+    this.step1 = this.ui.checkbox('Customize Helm options before install')
+    this.step2 = this.ui.button('Edit YAML')
     this.stepTitle = page.locator('div.top.choice-banner>.title')
     this.nextBtn = this.ui.button('Next')
     this.installBtn = this.ui.button(/Install|Install this version/)

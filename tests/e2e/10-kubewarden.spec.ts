@@ -107,6 +107,10 @@ test('Install Kubewarden', { tag: '@kw' }, async({ page, ui, nav }) => {
   })
 })
 
+test('Install Kubewarden from AppCo (IBS)', { tag: '@kw' }, async({ page }) => {
+  test.skip()
+})
+
 test('Install Kubewarden by Fleet', { tag: '@kw' }, async({ page }) => {
   test.skip(conf.kw_mode !== 'fleet')
   test.slow()
@@ -133,8 +137,8 @@ test('Add Policy Catalog Repository', { tag: '@kw' }, async({ page, ui, nav }) =
 
   // Add the repository
   await ui.button('Add Policy Catalog Repository').click()
-  await expect(page.getByText('No official policies found.')).not.toBeVisible()
   await ui.retry(async() => {
+    await expect(page.getByText('No official policies found.')).not.toBeVisible({ timeout: 20 })
     await expect(cap.cards()).toHaveCount(100)
   }, 'No policy repository found. Please add a policy repository to view policies.')
 })

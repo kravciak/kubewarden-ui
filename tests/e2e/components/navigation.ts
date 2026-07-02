@@ -166,6 +166,8 @@ export class Navigation {
     if (name) {
       await this.ui.tableRow(name).open()
       await expect(this.page.getByRole('heading', { name: new RegExp(`Policy Servers:? ${name}`) })).toBeVisible()
+    } else {
+      await expect(this.ui.tableRow(0).row.or(this.page.getByText('There are no rows to show.'))).toBeVisible()
     }
     if (tab) await this.ui.tab(tab).click()
   }
