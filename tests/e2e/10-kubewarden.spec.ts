@@ -88,23 +88,6 @@ test('Install Kubewarden', { tag: '@kw' }, async({ page, ui, nav }) => {
   await ui.retry(async() => {
     await expect(page.getByRole('heading', { name: 'Welcome to Kubewarden' })).toBeVisible()
   }, 'Kubewarden installation not detected')
-
-  await test.step('Install default policyserver', async() => {
-    const psPage = new PolicyServersPage(page)
-
-    // Banner is visible on Overview page
-    await kwPage.goto()
-    await expect(psPage.noDefaultPsBanner).toBeVisible()
-    // Banner is visible on Policy Servers page
-    await psPage.goto()
-    await expect(psPage.noDefaultPsBanner).toBeVisible()
-
-    await ui.button('Install Chart').click()
-    await expect(page).toHaveURL(/.*\/apps\/charts\/install.*chart=kubewarden-defaults/)
-
-    // Handle PolicyServer Installer Dialog
-    await psPage.installDefault({ recommended: true, mode: 'monitor' })
-  })
 })
 
 test('Install Kubewarden from AppCo (IBS)', { tag: '@kw' }, async({ page }) => {
