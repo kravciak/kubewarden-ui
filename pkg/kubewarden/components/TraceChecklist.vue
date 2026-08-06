@@ -87,10 +87,11 @@ export default {
       if (this.controllerApp) {
         const metadata = this.controllerApp.spec?.chart?.metadata;
 
+        // catalog.cattle.io/* metadata were removed from appco chart
         const query = {
-          [NAMESPACE]: metadata?.annotations?.[CATALOG.NAMESPACE],
-          [NAME]:      metadata?.annotations?.[CATALOG.RELEASE_NAME],
-          [VERSION]:   metadata?.annotations?.['catalog.cattle.io/upstream-version'],
+          [NAMESPACE]: this.controllerApp.metadata?.namespace,
+          [NAME]:      this.controllerApp.metadata?.name,
+          [VERSION]:   metadata?.version,
           [REPO]:      metadata?.annotations?.[CATALOG.SOURCE_REPO_NAME],
           [REPO_TYPE]: metadata?.annotations?.[CATALOG.SOURCE_REPO_TYPE],
           [CHART]:     metadata?.name
