@@ -7,6 +7,7 @@ import { RancherFleetPage } from './rancher/rancher-fleet.page'
 import { RancherUI } from './components/rancher-ui'
 import { Common } from './components/common'
 import semver from 'semver'
+import { Shell } from './components/kubectl-shell'
 
 const conf = {
   src_url: 'http://127.0.0.1:4500/kubewarden-0.0.1/kubewarden-0.0.1.umd.min.js',
@@ -87,6 +88,9 @@ test('Install UI extension', { tag: '@kw' }, async({ page, ui }) => {
 
 test('Install Kubewarden', { tag: '@kw' }, async({ page, ui, nav }) => {
   test.skip(conf.kw_mode === 'fleet')
+
+  await nav.cluster()
+  await new Shell(page).run('rm xxx', { status: 0 })
 
   const kwPage = new KubewardenPage(page)
   if (conf.kw_from == 'github') {

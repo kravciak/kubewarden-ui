@@ -66,6 +66,37 @@ export class Shell {
     }
   }
 
+  // Expect one of screenshots
+  async expectScreenshots(
+    names: string[],
+    options?: { clip?: { x: number, y: number, width: number, height: number } }
+  ) {
+    try {
+      await Promise.any(
+        names.map(name => expect(this.page).toHaveScreenshot(name, options))
+      )
+    } catch (e) {
+      throw (e as AggregateError).errors[0]
+      // throw new Error(`None matched: ${names.join(', ')}`, { cause: (e as AggregateError).errors })
+    }
+
+    // for (let i = 0; i < names.length - 1; i++) {
+    //   try {
+    //     return await expect(this.page).toHaveScreenshot(names[i], options)
+    //   } catch {}
+    // }
+    // await expect(this.page).toHaveScreenshot(names[names.length - 1], options)
+
+    // try {
+    //   await Promise.any(
+    //     names.map(name => expect(this.page).toHaveScreenshot(name, options))
+    //   )
+    // } catch (e) {
+    //   const errors = (e as AggregateError).errors
+    //   throw new Error(`None of the expected screenshots matched: ${names.join(', ')}`, { cause: errors })
+    // }
+  }
+
   /**
      * Execute command in rancher shell (canvas)
      */
@@ -85,18 +116,21 @@ export class Shell {
 
     // Command finished when we see EXITSTATUS-
     await expect(async() => {
-      await expect(this.page).toHaveScreenshot('shell/EXITSTATUS-NaN.png', { clip: { ...clip, width: 77 } })
+      // await expect(this.page).toHaveScreenshot('shell/EXITSTATUS-NaN.png', { clip: { ...clip, width: 77 } })
+      await this.expectScreenshots(['shell/EXITSTATUS-NaN.png', 'shell/EXITSTATUS-NaN-leap.png'], { clip: { ...clip, width: 77 } })
     }).toPass({ timeout, intervals: [500, 1_000, 5_000] })
 
     let statusCode = NaN
     if (isFinite(status)) {
       // Verify command exit status
-      await expect(this.page).toHaveScreenshot(`shell/EXITSTATUS-${status}.png`, { clip })
+      // await expect(this.page).toHaveScreenshot(`shell/EXITSTATUS-${status}.png`, { clip })
+      await this.expectScreenshots([`shell/EXITSTATUS-${status}.png`, `shell/EXITSTATUS-${status}-leap.png`], { clip })
       statusCode = status
     } else {
       // Return exit status 0 if command passed (for retries)
       try {
-        await expect(this.page).toHaveScreenshot('shell/EXITSTATUS-0.png', { clip })
+        // await expect(this.page).toHaveScreenshot('shell/EXITSTATUS-0.png', { clip })
+        await this.expectScreenshots(['shell/EXITSTATUS-0.png', 'shell/EXITSTATUS-0-leap.png'], { clip })
         statusCode = 0
       } catch {}
     }
