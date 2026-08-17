@@ -90,7 +90,7 @@ test('Install Kubewarden', { tag: '@kw' }, async({ page, ui, nav }) => {
   test.skip(conf.kw_mode === 'fleet')
 
   await nav.cluster()
-  await new Shell(page).run('ls xxx', { status: 1 })
+  await new Shell(page).run('ls xxx', { status: 2 })
 
   const kwPage = new KubewardenPage(page)
   if (conf.kw_from == 'github') {
