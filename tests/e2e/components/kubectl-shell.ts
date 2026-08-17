@@ -67,17 +67,13 @@ export class Shell {
   }
 
   // Expect one of screenshots
-  async expectScreenshots(
-    names: string[],
-    options?: { clip?: { x: number, y: number, width: number, height: number } }
-  ) {
+  async expectScreenshots(names: string[], options?: { clip?: { x: number, y: number, width: number, height: number } }) {
     try {
       await Promise.any(
         names.map(name => expect(this.page).toHaveScreenshot(name, options))
       )
     } catch (e) {
       throw (e as AggregateError).errors[0]
-      // throw new Error(`None matched: ${names.join(', ')}`, { cause: (e as AggregateError).errors })
     }
 
     // for (let i = 0; i < names.length - 1; i++) {
