@@ -267,7 +267,8 @@ jobs:
           GREPI="90-.*install: [$ex]"
         fi
 
-        yarn playwright test ${TFILTER:-} ${GREPI:+--grep-invert "$GREPI"} -x
+        yarn playwright test -x ${GREPI:+--grep-invert "$GREPI"} ${TFILTER:-}
+        yarn playwright test -x --grep @scan "\/80"
       env:
         MODE: ${{ matrix.mode }}
         # Override OTEL operator version by github variable
