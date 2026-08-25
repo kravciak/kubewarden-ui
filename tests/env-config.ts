@@ -20,6 +20,8 @@ export const conf = {
     kubewarden : 'http://127.0.0.1:4500/kubewarden-0.0.1/kubewarden-0.0.1.umd.min.js',
     // VERSION=0.0.1 yarn build-pkg vulnerability-scanner
     sbomscanner: 'http://127.0.0.1:4501/vulnerability-scanner-0.0.1/vulnerability-scanner-0.0.1.umd.min.js',
+    // VERSION=0.0.1 yarn build-pkg runtime-enforcer
+    runenforcer: 'http://127.0.0.1:4501/runtime-enforcer-0.0.1/runtime-enforcer-0.0.1.umd.min.js',
   },
 
   // Credentials

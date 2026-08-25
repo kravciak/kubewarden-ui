@@ -17,7 +17,7 @@ test.beforeAll(async({ request }) => {
     .catch(() => fallback)
 })
 
-test('Install UI extension', { tag: '@scan' }, async({ page, ui }) => {
+test('Install UI extension', { tag: '@sbom' }, async({ page, ui }) => {
   const extensions = new RancherExtensionsPage(page)
   await extensions.goto()
 
@@ -45,12 +45,12 @@ test('Install UI extension', { tag: '@scan' }, async({ page, ui }) => {
     if (conf.ui_from === 'source') {
       await extensions.developerLoad(conf.source.sbomscanner)
     } else {
-      await extensions.install('SBOMScanner', { version: process.env.UIVERSION?.replace(/^sbomscanner-ui-ext-/, '') })
+      await extensions.install('SBOMScanner', { version: process.env.UIVERSION?.replace(/^vulnerability-scanner-/, '') })
     }
   })
 })
 
-test('Install SBOMScanner', { tag: '@scan' }, async({ page, nav, ui }) => {
+test('Install SBOMScanner', { tag: '@sbom' }, async({ page, nav, ui }) => {
   // Disable partners repo for cnpg chart - issue#716
   await nav.explorer('Apps', 'Repositories')
   const partners = ui.tableRow('Partners')

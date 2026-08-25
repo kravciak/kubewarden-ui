@@ -1,7 +1,7 @@
 import { test } from './rancher/rancher-test'
 import { RancherCommonPage } from './rancher/rancher-common.page'
 
-test('Initial rancher setup', { tag: ['@kw', '@sbom'] }, async({ page, ui, nav }) => {
+test('Initial rancher setup', { tag: ['@kw', '@sbom', '@renf'] }, async({ page, ui, nav }) => {
   const rancher = new RancherCommonPage(page)
 
   await test.step('Global setup', async() => {
